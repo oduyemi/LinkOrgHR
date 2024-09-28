@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { ChakraProvider } from '@chakra-ui/react'
 import { Toaster } from "sonner";
 import NotFoundPage from "./pages/NotFoundPage.tsx";
 import { Dashboard } from "./pages/admin/index.ts";
@@ -24,7 +25,6 @@ import OvertimeManagement from "./pages/admin/attendance/OvertimeManagement.tsx"
 import SalaryCalculations from "./pages/admin/payroll/SalaryCalculations.tsx";
 import PayrollCompliance from "./pages/admin/payroll/PayrollCompliance.tsx";
 import Login from "./pages/auth/Login.tsx";
-import AddJobHistory from "./pages/admin/employee/AddJobHistory.tsx";
 import EmployeeDocumentManager from "./pages/admin/employee/EmployeeDocumentManager.tsx";
 import EmployeeList from "./pages/admin/employee/EmployeeList.tsx";
 import WebsiteLayout from "./pages/layouts/WebsiteLayout.tsx";
@@ -40,7 +40,7 @@ const router = createBrowserRouter([
     element: <WebsiteLayout />,
     children: [
       {
-        path: "/auth/login",
+        path: "/login",
         element: <Login />,
         errorElement: <NotFoundPage />,
       },
@@ -62,11 +62,6 @@ const router = createBrowserRouter([
       {
         path: "/employees/add",
         element: <AddEmployee />,
-        errorElement: <NotFoundPage />,
-      },
-      {
-        path: "/employees/job-history",
-        element: <AddJobHistory />,
         errorElement: <NotFoundPage />,
       },
       {
@@ -179,7 +174,9 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
-    <Toaster richColors position="top-right" expand={false} />
+    <ChakraProvider>
+      <RouterProvider router={router} />
+      <Toaster richColors position="top-right" expand={false} />
+    </ChakraProvider>
   </React.StrictMode>
 );
