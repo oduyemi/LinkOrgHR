@@ -80,11 +80,10 @@ const navigation: NavigationItem[] = [
     icon: CalendarDateRangeIcon,
     current: false,
     submenu: [
-      { name: "Time Tracking", href: "attendance/time-tracking" },
-      { name: "Attendance Records", href: "attendance/attendance-records" },
+      { name: "Attendance", href: "attendance" },
       { name: "Leave Management", href: "attendance/leave-management" },
-      { name: "Overtime Management", href: "attendance/overtime-management" },
-      { name: "Attendance Reports", href: "attendance/attendance-reports" },
+      { name: "Overtime Management", href: "attendance/overtime" },
+      { name: "Time Tracking", href: "attendance/time-tracking" },
     ],
   },
   {

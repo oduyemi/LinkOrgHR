@@ -11,7 +11,7 @@ const PageTitle: React.FC<Props> = ({ title, color }) => {
   return (
     <>
       <div className="flex w-full mx-auto mb-6">
-        <h1 className={`text-3xl font-medium text-gray-900`}>{title}</h1>
+        <h1 className={`text-3xl font-medium text-[#010156]`}>{title}</h1>
         {/* <p className="text-sm text-dark-1/80 font-medium">{date} </p> */}
       </div>
     </>

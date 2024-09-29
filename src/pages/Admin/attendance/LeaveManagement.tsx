@@ -13,6 +13,7 @@ import {
   InformationCircleIcon,
 } from "@heroicons/react/24/outline";
 import PageTitle from "../../../components/ui/PageTitle";
+import { Box, Flex, Text } from "@chakra-ui/react"; // Import Chakra UI components
 
 const validationSchema = Yup.object({
   employeeId: Yup.string().required("Employee ID is required"),
@@ -50,7 +51,7 @@ const LeaveManagement: React.FC = () => {
     initialValues: {
       employeeId: currentRequest?.employeeId || "",
       employeeName: currentRequest?.employeeName || "",
-      leaveType: currentRequest?.leaveType!,
+      leaveType: currentRequest?.leaveType || "",
       startDate: currentRequest?.startDate || "",
       endDate: currentRequest?.endDate || "",
       reason: currentRequest?.reason || "",
@@ -177,127 +178,118 @@ const LeaveManagement: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col">
+    <Box>
       <PageTitle title="Leave Management" />
 
-      <div className="pt-10 p-6 border-[.8px] rounded-xl">
-        <div className="flex flex-col w-full">
-          <div className="flex gap-2 items-center bg-primary-3 text-primary-1 p-2 rounded-md mb-4">
-            <InformationCircleIcon className="inline-block mr-2 w-6 h-6" />
-            <p>
-              <strong>Leave Balance:</strong> Vacation: {leaveBalance.vacation}{" "}
-              days, Sick Leave: {leaveBalance.sickLeave} days, Personal:{" "}
-              {leaveBalance.personal} days
-            </p>
-          </div>
-          <button
-            className="flex items-center bg-primary-1 text-white py-2 px-4 rounded mb-4"
-            onClick={() => handleShowModal(null)}
-          >
-            <CalendarDateRangeIcon className="w-5 h-5 inline mr-2" /> Request
-            Leave
-          </button>
+      <Flex flexDirection="column" p={6} borderWidth={0.8} borderRadius="xl">
+        <Flex gap={2} alignItems="center" bg="blue.100" p={2} borderRadius="md" mb={4}>
+          <InformationCircleIcon className="inline-block mr-2 w-6 h-6" />
+          <Text>
+            <strong>Leave Balance:</strong> Vacation: {leaveBalance.vacation}{" "}
+            days, Sick Leave: {leaveBalance.sickLeave} days, Personal:{" "}
+            {leaveBalance.personal} days
+          </Text>
+        </Flex>
+        <Button
+          onClick={() => handleShowModal(null)}
+          leftIcon={<CalendarDateRangeIcon className="w-5 h-5" />}
+          colorScheme="blue"
+          mb={4}
+        >
+          Request Leave
+        </Button>
 
-          <Table columns={columns} dataSource={leaveRequests} rowKey="id" />
+        <Table columns={columns} dataSource={leaveRequests} rowKey="id" />
 
-          {showModal && (
-            <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-              <div className="bg-white p-8 rounded-lg w-full max-w-lg">
-                <h2 className="text-xl font-bold mb-4">
-                  {currentRequest ? "View Leave Request" : "Request Leave"}
-                </h2>
-                <form onSubmit={formik.handleSubmit}>
-                  <InputField
-                    label="Employee ID"
-                    id="employeeId"
-                    name="employeeId"
-                    value={formik.values.employeeId}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    required
-                    error={formik.errors.employeeId}
-                  />
-                  <InputField
-                    label="Employee Name"
-                    id="employeeName"
-                    name="employeeName"
-                    value={formik.values.employeeName}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    required
-                    error={formik.errors.employeeName}
-                  />
-                  <SelectField
-                    label="Leave Type"
-                    id="leaveType"
-                    name="leaveType"
-                    value={formik.values.leaveType}
-                    options={["Vacation", "Sick Leave", "Personal", "Other"]}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    required
-                    error={formik.errors.leaveType}
-                  />
-                  <InputField
-                    label="Start Date"
-                    id="startDate"
-                    name="startDate"
-                    type="date"
-                    value={formik.values.startDate}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    required
-                    error={formik.errors.startDate}
-                  />
-                  <InputField
-                    label="End Date"
-                    id="endDate"
-                    name="endDate"
-                    type="date"
-                    value={formik.values.endDate}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    required
-                    error={formik.errors.endDate}
-                  />
-                  <TextAreaField
-                    label="Reason"
-                    id="reason"
-                    name="reason"
-                    value={formik.values.reason}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    required
-                    error={formik.errors.reason}
-                  />
-                  <div className="flex w-full justify-end">
-                    <div className="w-[150px] h-[38px] mr-2">
-                      <Button
-                        onClick={() => setShowModal(false)}
-                        mode={"outline"}
-                        buttonText="Cancel"
-                        defaultColor="primary-1"
-                        hoverColor="primary-2"
-                      />
-                    </div>
-                    {!currentRequest && (
-                      <div className="w-[150px] h-[38px]">
-                        <Button
-                          mode={"solid"}
-                          buttonText="Submit Request"
-                          defaultColor="primary-1"
-                          hoverColor="primary-2"
-                        />
-                      </div>
-                    )}
-                  </div>
-                </form>
-              </div>
+        {showModal && (
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+            <div className="bg-white p-8 rounded-lg w-full max-w-lg">
+              <h2 className="text-xl font-bold mb-4">
+                {currentRequest ? "View Leave Request" : "Request Leave"}
+              </h2>
+              <form onSubmit={formik.handleSubmit}>
+                <InputField
+                  label="Employee ID"
+                  id="employeeId"
+                  name="employeeId"
+                  value={formik.values.employeeId}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  required
+                  error={formik.errors.employeeId}
+                />
+                <InputField
+                  label="Employee Name"
+                  id="employeeName"
+                  name="employeeName"
+                  value={formik.values.employeeName}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  required
+                  error={formik.errors.employeeName}
+                />
+                <SelectField
+                  label="Leave Type"
+                  id="leaveType"
+                  name="leaveType"
+                  value={formik.values.leaveType}
+                  options={["Vacation", "Sick Leave", "Personal", "Other"]}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  required
+                  error={formik.errors.leaveType}
+                />
+                <InputField
+                  label="Start Date"
+                  id="startDate"
+                  name="startDate"
+                  type="date"
+                  value={formik.values.startDate}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  required
+                  error={formik.errors.startDate}
+                />
+                <InputField
+                  label="End Date"
+                  id="endDate"
+                  name="endDate"
+                  type="date"
+                  value={formik.values.endDate}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  required
+                  error={formik.errors.endDate}
+                />
+                <TextAreaField
+                  label="Reason"
+                  id="reason"
+                  name="reason"
+                  value={formik.values.reason}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  required
+                  error={formik.errors.reason}
+                />
+                <Flex justifyContent="flex-end" mt={4}>
+                  <Button
+                    onClick={() => setShowModal(false)}
+                    variant="outline"
+                    colorScheme="red"
+                    mr={2}
+                  >
+                    Cancel
+                  </Button>
+                  <Button type="submit" colorScheme="orange">
+                    {currentRequest ? "Update Request" : "Submit Request"}
+                  </Button>
+                </Flex>
+              </form>
             </div>
-          )}
-        </div>
-      </div>
-    </div>
+          </div>
+        )}
+      </Flex>
+    </Box>
   );
 };
 

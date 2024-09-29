@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  Box, Button, FormControl, FormLabel, Input, Stack, Heading, Select, Flex,
+  Box, Button, FormControl, FormLabel, Input, Stack, Heading, Select, Flex, Text, useToast,
 } from '@chakra-ui/react';
 
 const AddEmployee = () => {
@@ -10,7 +10,7 @@ const AddEmployee = () => {
     phone: '',
     dateOfBirth: '',
     gender: '',
-    profilePicture: '',
+    profilePicture: null,
     hireDate: '',
     position: '',
     department: '',
@@ -23,20 +23,71 @@ const AddEmployee = () => {
     pensionRSA: '',
     taxID: '',
     meansOfIdentification: '',
-    idCard: '',
+    idCard: null,
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const toast = useToast();
+
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setEmployeeData({
-      ...employeeData,
-      [name]: value,
-    });
+    if (e.target.type === 'file') {
+      setEmployeeData({ ...employeeData, [name]: e.target.files[0] });
+    } else {
+      setEmployeeData({
+        ...employeeData,
+        [name]: value,
+      });
+    }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    // Basic validation
+    const { name, email, phone } = employeeData;
+    if (!name || !email || !phone) {
+      toast({
+        title: "Error.",
+        description: "Name, email, and phone are required fields.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+
     console.log('Employee data submitted:', employeeData);
     // Add your submission logic here
+
+    // Show success message
+    toast({
+      title: "Success!",
+      description: "Employee data has been submitted.",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+    });
+
+    // Reset the form
+    setEmployeeData({
+      name: '',
+      email: '',
+      phone: '',
+      dateOfBirth: '',
+      gender: '',
+      profilePicture: null,
+      hireDate: '',
+      position: '',
+      department: '',
+      lineManager: '',
+      employeeNumber: '',
+      probationPeriod: '',
+      confirmationDate: '',
+      salaryAccountBank: '',
+      salaryAccountNumber: '',
+      pensionRSA: '',
+      taxID: '',
+      meansOfIdentification: '',
+      idCard: null,
+    });
   };
 
   return (
@@ -44,7 +95,7 @@ const AddEmployee = () => {
       <Box width="100%" maxW="800px" p={6} bg="white" boxShadow="md" borderRadius="md">
         <Heading mb={6} color="#010156">Add New Employee</Heading>
         <Stack spacing={4}>
-          <FormControl>
+          <FormControl isRequired>
             <FormLabel color="black">Full Name</FormLabel>
             <Input
               type="text"
@@ -56,7 +107,7 @@ const AddEmployee = () => {
             />
           </FormControl>
 
-          <FormControl>
+          <FormControl isRequired>
             <FormLabel color="black">Email</FormLabel>
             <Input
               type="email"
@@ -68,7 +119,7 @@ const AddEmployee = () => {
             />
           </FormControl>
 
-          <FormControl>
+          <FormControl isRequired>
             <FormLabel color="black">Phone Number</FormLabel>
             <Input
               type="tel"
@@ -111,7 +162,7 @@ const AddEmployee = () => {
             <Input
               type="file"
               name="profilePicture"
-              onChange={(e: any) => setEmployeeData({ ...employeeData, profilePicture: e.target.files[0] })}
+              onChange={handleChange}
               color="black"
             />
           </FormControl>
@@ -266,7 +317,7 @@ const AddEmployee = () => {
             <Input
               type="file"
               name="idCard"
-              onChange={(e: any) => setEmployeeData({ ...employeeData, idCard: e.target.files[0] })}
+              onChange={handleChange}
               color="black"
             />
           </FormControl>

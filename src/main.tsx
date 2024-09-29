@@ -34,6 +34,7 @@ import PayslipPage from "./pages/Employee/PayslipPage.tsx";
 import LeaveRequestPage from "./pages/Employee/LeaveRequestPage.tsx";
 import PerformanceReviewPage from "./pages/Employee/PerformanceReviewPage.tsx";
 import DocumentManagementPage from "./pages/Employee/DocumentManagementPage.tsx";
+import Attendance from "./pages/Admin/attendance/Attendance.tsx";
 
 const router = createBrowserRouter([
   {
@@ -69,6 +70,7 @@ const router = createBrowserRouter([
         element: <EmployeeDocumentManager />,
         errorElement: <NotFoundPage />,
       },
+
       // Onboarding Routes
       {
         path: "/onboarding/job-postings",
@@ -103,6 +105,11 @@ const router = createBrowserRouter([
 
       // Attendance Routes
       {
+        path: "/attendance",
+        element: <Attendance />,
+        errorElement: <NotFoundPage />,
+      },
+      {
         path: "/attendance/time-tracking",
         element: <TimeTracking />,
         errorElement: <NotFoundPage />,
@@ -113,7 +120,7 @@ const router = createBrowserRouter([
         errorElement: <NotFoundPage />,
       },
       {
-        path: "/attendance/overtime-management",
+        path: "/attendance/overtime",
         element: <OvertimeManagement />,
         errorElement: <NotFoundPage />,
       },

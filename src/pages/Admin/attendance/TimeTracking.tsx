@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Table } from "antd";
-import type { TableColumnsType, TableProps } from "antd";
+import { Table, Button, Flex, Box, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter } from "@chakra-ui/react";
+import { Table as AntTable } from "antd"; // Assuming you're still using Ant Design for the table
+import type { TableColumnsType } from "antd";
 import { FaClock, FaPlay, FaStop } from "react-icons/fa";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -70,18 +71,12 @@ const columns: TableColumnsType<TimeEntry> = [
     width: "10%",
     render: (_, record) => (
       <div className="flex space-x-2">
-        <button
-          className="text-primary-1 py-1 px-2 rounded"
-          onClick={() => console.log("Edit", record)}
-        >
+        <Button variant="outline" onClick={() => console.log("Edit", record)}>
           <PencilSquareIcon className="w-4 h-4" />
-        </button>
-        <button
-          className="text-red-500 py-1 px-2 rounded"
-          onClick={() => console.log("Delete", record.id)}
-        >
+        </Button>
+        <Button variant="outline" colorScheme="red" onClick={() => console.log("Delete", record.id)}>
           <TrashIcon className="w-4 h-4" />
-        </button>
+        </Button>
       </div>
     ),
   },
@@ -217,151 +212,121 @@ const TimeTracking: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col">
+    <Box>
       <PageTitle title="Time Tracking" />
-
-      <div className="pt-10 p-6 border-[.8px] rounded-xl">
-        <div className="flex flex-col w-full">
-          <div className="flex flex-wrap space-x-2 mb-4">
-            <button
-              className="btn btn-primary"
-              onClick={() => handleShowModal(null)}
-            >
+      <Box p={6} borderWidth={1} borderRadius="md">
+        <Flex direction="column" w="full">
+          <Flex mb={4} wrap="wrap" gap={2}>
+            <Button colorScheme="teal" onClick={() => handleShowModal(null)}>
               Add Manual Entry
-            </button>
+            </Button>
             {!isTracking ? (
-              <button
-                className="btn btn-success flex items-center"
-                onClick={handleStartTracking}
-              >
-                <FaPlay className="ml-3 mr-2 text-primary-1" /> Start Tracking
-              </button>
+              <Button colorScheme="green" onClick={handleStartTracking} leftIcon={<FaPlay />}>
+                Start Tracking
+              </Button>
             ) : (
-              <button
-                className="btn btn-danger flex items-center"
-                onClick={handleStopTracking}
-              >
-                <FaStop className="ml-3 mr-2 text-red-400" /> Stop Tracking
-              </button>
+              <Button colorScheme="red" onClick={handleStopTracking} leftIcon={<FaStop />}>
+                Stop Tracking
+              </Button>
             )}
-          </div>
+          </Flex>
           {isTracking && (
-            <div className="bg-primary-3 text-primary-1 p-2 rounded-md mb-4">
-              <FaClock className="inline-block mr-2" /> Time tracking started at
-              {trackingStartTime?.toLocaleTimeString()}
-            </div>
+            <Box bg="teal.100" p={2} borderRadius="md" mb={4}>
+              <FaClock /> Time tracking started at {trackingStartTime?.toLocaleTimeString()}
+            </Box>
           )}
-          <div className="w-full">
-            <Table
+          <Box w="full">
+            <AntTable
               scroll={{ x: 500 }}
               columns={columns}
               dataSource={timeEntries}
               rowKey="id"
               className="bg-white shadow-md rounded-lg"
             />
-          </div>
+          </Box>
 
-          {showModal && (
-            <Modal
-              formik={formik}
-              handleCloseModal={handleCloseModal}
-              currentEntry={currentEntry}
+          <Modal isOpen={showModal} onClose={handleCloseModal}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>{currentEntry ? "Edit Time Entry" : "Add Time Entry"}</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <InputField
+                  label="Employee ID"
+                  id="employeeId"
+                  name="employeeId"
+                  type="text"
+                  value={formik.values.employeeId}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched.employeeId && formik.errors.employeeId}
+                />
+            <InputField
+              label="Date"
+              id="date"
+              name="date"
+              type="date"
+              value={formik.values.date}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.date && formik.errors.date}
             />
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Modal Component
-const Modal: React.FC<{
-  formik: any;
-  handleCloseModal: () => void;
-  currentEntry: TimeEntry | null;
-}> = ({ formik, handleCloseModal, currentEntry }) => {
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg max-w-md w-full">
-        <h3 className="text-xl mb-4">
-          {currentEntry ? "Edit Time Entry" : "Add Time Entry"}
-        </h3>
-        <form onSubmit={formik.handleSubmit}>
-          <InputField
-            label="Employee ID"
-            id="employeeId"
-            name="employeeId"
-            type="text"
-            value={formik.values.employeeId}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.employeeId && formik.errors.employeeId}
-          />
-          <InputField
-            label="Date"
-            id="date"
-            name="date"
-            type="date"
-            value={formik.values.date}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.date && formik.errors.date}
-          />
-          <InputField
-            label="Start Time"
-            id="startTime"
-            name="startTime"
-            type="time"
-            value={formik.values.startTime}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.startTime && formik.errors.startTime}
-          />
-          <InputField
-            label="End Time"
-            id="endTime"
-            name="endTime"
-            type="time"
-            value={formik.values.endTime}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.endTime && formik.errors.endTime}
-          />
-          <InputField
-            label="Project"
-            id="project"
-            name="project"
-            type="text"
-            value={formik.values.project}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.project && formik.errors.project}
-          />
-          <TextAreaField
-            label="Description"
-            id="description"
-            name="description"
-            value={formik.values.description}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.description && formik.errors.description}
-          />
-          <div className="flex justify-end space-x-2 mt-4">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={handleCloseModal}
+            <InputField
+              label="Start Time"
+              id="startTime"
+              name="startTime"
+              type="time"
+              value={formik.values.startTime}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.startTime && formik.errors.startTime}
+            />
+            <InputField
+              label="End Time"
+              id="endTime"
+              name="endTime"
+              type="time"
+              value={formik.values.endTime}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.endTime && formik.errors.endTime}
+            />
+            <InputField
+              label="Project"
+              id="project"
+              name="project"
+              type="text"
+              value={formik.values.project}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.project && formik.errors.project}
+            />
+            <TextAreaField
+              label="Description"
+              id="description"
+              name="description"
+              value={formik.values.description}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.description && formik.errors.description}
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={handleCloseModal}>Cancel</Button>
+            <Button
+              colorScheme="teal"
+              onClick={formik.handleSubmit}
+              ml={3}
             >
-              Cancel
-            </button>
-            <button type="submit" className="btn btn-primary">
               {currentEntry ? "Update" : "Add"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-};
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </Flex>
+  </Box>
+</Box>
+)
+}
 
 export default TimeTracking;

@@ -1,13 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Badge, Table } from "antd";
+import {
+  Badge,
+  Table,
+  Box,
+  Flex,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  Thead,
+  Tr,
+  Th,
+  Tbody,
+  Td,
+} from "@chakra-ui/react";
 import { FaClock, FaCheck, FaTimes } from "react-icons/fa";
-import InputField from "../../../components/ui/InputField";
-import TextAreaField from "../../../components/ui/TextAreaField";
-import { Button } from "../../../components/ui/Button";
-import PageTitle from "../../../components/ui/PageTitle";
-import { ClockIcon } from "@heroicons/react/24/outline";
+import InputField from "../../../components/ui/InputField"; // Keep this unchanged
+import TextAreaField from "../../../components/ui/TextAreaField"; // Keep this unchanged
+import { Button } from "../../../components/ui/Button"; // Keep this unchanged
+import PageTitle from "../../../components/ui/PageTitle"; // Keep this unchanged
 
 interface OvertimeRequest {
   id: number;
@@ -32,14 +48,9 @@ const validationSchema = Yup.object({
 
 const OvertimeManagement: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
-
-  const [overtimeRequests, setOvertimeRequests] = useState<OvertimeRequest[]>(
-    []
-  );
+  const [overtimeRequests, setOvertimeRequests] = useState<OvertimeRequest[]>([]);
   const [showModal, setShowModal] = useState(false);
-  const [currentRequest, setCurrentRequest] = useState<OvertimeRequest | null>(
-    null
-  );
+  const [currentRequest, setCurrentRequest] = useState<OvertimeRequest | null>(null);
 
   useEffect(() => {
     const savedRequests = localStorage.getItem("overtimeRequests");
@@ -122,13 +133,13 @@ const OvertimeManagement: React.FC = () => {
       key: "status",
       render: (status: string) => (
         <Badge
-          className={`${
+          colorScheme={
             status === "Approved"
-              ? "bg-green-500"
+              ? "green"
               : status === "Rejected"
-              ? "bg-red-500"
-              : "bg-yellow-500"
-          } text-white px-2 py-1 rounded`}
+              ? "red"
+              : "yellow"
+          }
         >
           {status}
         </Badge>
@@ -138,30 +149,33 @@ const OvertimeManagement: React.FC = () => {
       title: "Actions",
       key: "actions",
       render: (_: any, record: OvertimeRequest) => (
-        <div className="flex space-x-2">
-          <button
-            className="text-primary-500 hover:underline"
+        <Flex>
+          <Button
+            variant="link"
+            colorScheme="blue"
             onClick={() => handleShowModal(record)}
           >
             View
-          </button>
+          </Button>
           {record.status === "Pending" && (
             <>
-              <button
-                className="text-green-500 hover:underline"
+              <Button
+                variant="link"
+                colorScheme="green"
                 onClick={() => handleApproveReject(record.id, "Approved")}
               >
                 <FaCheck /> Approve
-              </button>
-              <button
-                className="text-red-500 hover:underline"
+              </Button>
+              <Button
+                variant="link"
+                colorScheme="red"
                 onClick={() => handleApproveReject(record.id, "Rejected")}
               >
                 <FaTimes /> Reject
-              </button>
+              </Button>
             </>
           )}
-        </div>
+        </Flex>
       ),
     },
   ];
@@ -192,31 +206,50 @@ const OvertimeManagement: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col">
+    <Box>
       <PageTitle title="Overtime Management" />
 
-      <div className="pt-10 p-6 border-[.8px] rounded-xl">
-        <div className="flex flex-col w-full">
-          <div className="w-[150px] h-[38px] mb-2">
+      <Box pt={10} p={6} borderWidth={1} borderRadius="xl">
+        <Flex direction="column" width="200px">
+          <Box mb={2}>
             <Button
               onClick={() => handleShowModal(null)}
               mode={"solid"}
               buttonText={"Log Overtime"}
               loading={isLoading}
-              imageIcon={<ClockIcon className="w-5 h-5" />}
+              imageIcon={<FaClock />}
               defaultColor="primary-1"
               hoverColor="primary-2"
             />
-          </div>
+          </Box>
 
-          <Table columns={columns} dataSource={overtimeRequests} rowKey="id" />
+          <Table variant="striped" colorScheme="teal" width="full">
+            <Thead>
+              <Tr>
+                {columns.map((col) => (
+                  <Th key={col.key}>{col.title}</Th>
+                ))}
+              </Tr>
+            </Thead>
+            <Tbody>
+              {overtimeRequests.map((request) => (
+                <Tr key={request.id}>
+                  {columns.map((col) => (
+                    <Td key={col.key}>{col.render ? col.render(null, request) : request[col.dataIndex]}</Td>
+                  ))}
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
 
-          {showModal && (
-            <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-              <div className="bg-white p-8 rounded-lg w-full max-w-lg">
-                <h2 className="text-xl font-bold mb-4">
-                  {currentRequest ? "View Overtime Request" : "Log Overtime"}
-                </h2>
+          <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>
+                {currentRequest ? "View Overtime Request" : "Log Overtime"}
+              </ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
                 <form onSubmit={formik.handleSubmit}>
                   <InputField
                     label="Employee ID"
@@ -281,34 +314,24 @@ const OvertimeManagement: React.FC = () => {
                     required
                     error={formik.errors.reason}
                   />
-                  <div className="flex w-full justify-end">
-                    <div className="w-[150px] h-[38px] mr-2">
-                      <Button
-                        onClick={() => setShowModal(false)}
-                        mode={"outline"}
-                        buttonText="Cancel"
-                        defaultColor="primary-1"
-                        hoverColor="primary-2"
-                      />
-                    </div>
-                    {!currentRequest && (
-                      <div className="w-[150px] h-[38px]">
-                        <Button
-                          mode={"solid"}
-                          buttonText="Submit Request"
-                          defaultColor="primary-1"
-                          hoverColor="primary-2"
-                        />
-                      </div>
-                    )}
-                  </div>
+                  <ModalFooter>
+                    <Button onClick={() => setShowModal(false)}>Cancel</Button>
+                    <Button
+                      colorScheme="blue"
+                      mr={3}
+                      type="submit"
+                      isLoading={formik.isSubmitting}
+                    >
+                      {currentRequest ? "Update" : "Log Overtime"}
+                    </Button>
+                  </ModalFooter>
                 </form>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
+              </ModalBody>
+            </ModalContent>
+          </Modal>
+        </Flex>
+      </Box>
+    </Box>
   );
 };
 
