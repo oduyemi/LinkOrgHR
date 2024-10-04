@@ -18,12 +18,14 @@ import {
   Th,
   Tbody,
   Td,
+  Stack,
+  Button,
+  Heading,
 } from "@chakra-ui/react";
 import { FaClock, FaCheck, FaTimes } from "react-icons/fa";
-import InputField from "../../../components/ui/InputField"; // Keep this unchanged
-import TextAreaField from "../../../components/ui/TextAreaField"; // Keep this unchanged
-import { Button } from "../../../components/ui/Button"; // Keep this unchanged
-import PageTitle from "../../../components/ui/PageTitle"; // Keep this unchanged
+import InputField from "../../../components/ui/InputField"; 
+import TextAreaField from "../../../components/ui/TextAreaField"; 
+import PageTitle from "../../../components/ui/PageTitle"; 
 
 interface OvertimeRequest {
   id: number;
@@ -45,6 +47,7 @@ const validationSchema = Yup.object({
   endTime: Yup.string().required("End time is required"),
   reason: Yup.string().required("Reason is required"),
 });
+
 
 const OvertimeManagement: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -94,6 +97,7 @@ const OvertimeManagement: React.FC = () => {
       setCurrentRequest(null);
     },
   });
+
 
   const columns = [
     {
@@ -180,6 +184,7 @@ const OvertimeManagement: React.FC = () => {
     },
   ];
 
+
   const handleShowModal = (request: OvertimeRequest | null) => {
     setCurrentRequest(request);
     setShowModal(true);
@@ -193,11 +198,13 @@ const OvertimeManagement: React.FC = () => {
     );
   };
 
+
   const calculateDuration = (startTime: string, endTime: string): number => {
     const start = new Date(`1970-01-01T${startTime}:00`);
     const end = new Date(`1970-01-01T${endTime}:00`);
-    return (end.getTime() - start.getTime()) / 60000; // Duration in minutes
+    return (end.getTime() - start.getTime()) / 60000;
   };
+
 
   const formatDuration = (minutes: number): string => {
     const hours = Math.floor(minutes / 60);
@@ -205,25 +212,24 @@ const OvertimeManagement: React.FC = () => {
     return `${hours}h ${mins}m`;
   };
 
-  return (
-    <Box>
-      <PageTitle title="Overtime Management" />
 
-      <Box pt={10} p={6} borderWidth={1} borderRadius="xl">
-        <Flex direction="column" width="200px">
-          <Box mb={2}>
+  return (
+    <Box p={5}>
+      <PageTitle title="Overtime Management" />
+      <Stack spacing={5}>
+        <Box p={6} borderWidth={1} borderRadius="xl" shadow="md" bg="white">
+          <Flex justifyContent="space-between" alignItems="center">
+            <Heading size="lg">Manage Overtime Requests</Heading>
             <Button
               onClick={() => handleShowModal(null)}
-              mode={"solid"}
-              buttonText={"Log Overtime"}
-              loading={isLoading}
-              imageIcon={<FaClock />}
-              defaultColor="primary-1"
-              hoverColor="primary-2"
-            />
-          </Box>
+              colorScheme="orange"
+              leftIcon={<FaClock />}
+            >
+              Log Overtime
+            </Button>
+          </Flex>
 
-          <Table variant="striped" colorScheme="teal" width="full">
+          <Table variant="striped" colorScheme="teal" mt={4}>
             <Thead>
               <Tr>
                 {columns.map((col) => (
@@ -233,7 +239,7 @@ const OvertimeManagement: React.FC = () => {
             </Thead>
             <Tbody>
               {overtimeRequests.map((request) => (
-                <Tr key={request.id}>
+                <Tr key={request.id} _hover={{ bg: "gray.100" }}>
                   {columns.map((col) => (
                     <Td key={col.key}>{col.render ? col.render(null, request) : request[col.dataIndex]}</Td>
                   ))}
@@ -329,8 +335,8 @@ const OvertimeManagement: React.FC = () => {
               </ModalBody>
             </ModalContent>
           </Modal>
-        </Flex>
-      </Box>
+        </Box>
+      </Stack>
     </Box>
   );
 };

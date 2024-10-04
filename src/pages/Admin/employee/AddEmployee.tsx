@@ -322,7 +322,7 @@ const AddEmployee = () => {
             />
           </FormControl>
 
-          <Button color="#010156" onClick={handleSubmit}>
+          <Button colorScheme="orange" onClick={handleSubmit}>
             Submit
           </Button>
         </Stack>

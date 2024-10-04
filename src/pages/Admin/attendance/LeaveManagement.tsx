@@ -13,7 +13,7 @@ import {
   InformationCircleIcon,
 } from "@heroicons/react/24/outline";
 import PageTitle from "../../../components/ui/PageTitle";
-import { Box, Flex, Text } from "@chakra-ui/react"; // Import Chakra UI components
+import { Box, Flex, Text } from "@chakra-ui/react"; 
 
 const validationSchema = Yup.object({
   employeeId: Yup.string().required("Employee ID is required"),
@@ -182,7 +182,7 @@ const LeaveManagement: React.FC = () => {
       <PageTitle title="Leave Management" />
 
       <Flex flexDirection="column" p={6} borderWidth={0.8} borderRadius="xl">
-        <Flex gap={2} alignItems="center" bg="blue.100" p={2} borderRadius="md" mb={4}>
+        <Flex gap={2} alignItems="center" className="bg-orange" p={2} borderRadius="md" mb={4}>
           <InformationCircleIcon className="inline-block mr-2 w-6 h-6" />
           <Text>
             <strong>Leave Balance:</strong> Vacation: {leaveBalance.vacation}{" "}

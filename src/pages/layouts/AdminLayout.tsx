@@ -83,7 +83,7 @@ const navigation: NavigationItem[] = [
       { name: "Attendance", href: "attendance" },
       { name: "Leave Management", href: "attendance/leave-management" },
       { name: "Overtime Management", href: "attendance/overtime" },
-      { name: "Time Tracking", href: "attendance/time-tracking" },
+      { name: "Time Tracker", href: "attendance/time-tracker" },
     ],
   },
   {
@@ -93,14 +93,9 @@ const navigation: NavigationItem[] = [
     current: false,
     submenu: [
       { name: "Salary Calculation", href: "payroll/salary-calculation" },
-      { name: "Payslip Generation", href: "payroll/payslip-generation" },
-      { name: "Tax Management", href: "payroll/tax-management" },
-      {
-        name: "Benefits Administration",
-        href: "payroll/benefits-administration",
-      },
-      { name: "Insurance Management", href: "payroll/insurance-management" },
-      { name: "Payroll Compliance", href: "payroll/payroll-compliance" },
+      { name: "Payslip Generator", href: "payroll/payslip" },
+      { name: "Tax Manager", href: "payroll/tax" },
+      { name: "HMO Manager", href: "payroll/hmo" },
     ],
   },
   {

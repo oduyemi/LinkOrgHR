@@ -1,17 +1,42 @@
 import React, { useState, useEffect } from "react";
-import { Table, Modal, Form, Input, Select, DatePicker } from "antd";
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+  Box,
+  Button,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  FormControl,
+  FormLabel,
+  Input,
+  Select,
+  Textarea,
+} from "@chakra-ui/react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import type { TableColumnsType } from "antd";
-import { Button } from "../../../components/ui/Button";
-import PageTitle from "../../../components/ui/PageTitle";
 
 interface SalaryRecord {
   id: number;
-  employeeId: string;
+  employeeNumber: string;
   employeeName: string;
+  jobTitle: string;
+  department: string;
   baseSalary: number;
+  netSalary: number;
+  grossSalary: number;
+  deductions: number;
+  bonus: number;
+  taxPayable: number;
+  pension: number;
   effectiveDate: string;
   adjustmentType: string;
   adjustmentAmount: number;
@@ -46,9 +71,17 @@ const SalaryCalculations: React.FC = () => {
 
   const formik = useFormik({
     initialValues: {
-      employeeId: currentRecord?.employeeId || "",
+      employeeNumber: currentRecord?.employeeNumber || "",
       employeeName: currentRecord?.employeeName || "",
+      jobTitle: currentRecord?.jobTitle || "",
+      department: currentRecord?.department || "",
       baseSalary: currentRecord?.baseSalary || 0,
+      netSalary: currentRecord?.netSalary || 0,
+      grossSalary: currentRecord?.grossSalary || 0,
+      deductions: currentRecord?.deductions || 0,
+      bonus: currentRecord?.bonus || 0,
+      taxPayable: currentRecord?.taxPayable || 0,
+      pension: currentRecord?.pension || 0,
       effectiveDate: currentRecord?.effectiveDate || "",
       adjustmentType: currentRecord?.adjustmentType || "Initial",
       adjustmentAmount: currentRecord?.adjustmentAmount || 0,
@@ -56,10 +89,30 @@ const SalaryCalculations: React.FC = () => {
     },
     enableReinitialize: true,
     validationSchema: Yup.object({
-      employeeId: Yup.string().required("Employee ID is required"),
+      employeeNumber: Yup.string().required("Employee Number is required"),
       employeeName: Yup.string().required("Employee Name is required"),
+      jobTitle: Yup.string().required("Job Title is required"),
+      department: Yup.string().required("Department is required"),
       baseSalary: Yup.number()
         .required("Base Salary is required")
+        .min(0, "Must be positive"),
+      netSalary: Yup.number()
+        .required("Net Salary is required")
+        .min(0, "Must be positive"),
+      grossSalary: Yup.number()
+        .required("Gross Salary is required")
+        .min(0, "Must be positive"),
+      deductions: Yup.number()
+        .required("Deductions are required")
+        .min(0, "Must be positive"),
+      bonus: Yup.number()
+        .required("Bonus is required")
+        .min(0, "Must be positive"),
+      taxPayable: Yup.number()
+        .required("Tax Payable is required")
+        .min(0, "Must be positive"),
+      pension: Yup.number()
+        .required("Pension is required")
         .min(0, "Must be positive"),
       effectiveDate: Yup.string(),
       adjustmentType: Yup.string().required("Adjustment Type is required"),
@@ -93,199 +146,228 @@ const SalaryCalculations: React.FC = () => {
     );
   };
 
-  const columns: TableColumnsType<SalaryRecord> = [
-    {
-      title: "Employee ID",
-      dataIndex: "employeeId",
-      width: "20%",
-    },
-    {
-      title: "Employee Name",
-      dataIndex: "employeeName",
-      width: "20%",
-    },
-    {
-      title: "Current Salary",
-      dataIndex: "baseSalary",
-      width: "15%",
-      render: (text) => `$${text.toFixed(2)}`,
-    },
-    {
-      title: "Last Adjustment Date",
-      dataIndex: "effectiveDate",
-      width: "15%",
-    },
-    {
-      title: "Actions",
-      dataIndex: "actions",
-      width: "15%",
-      render: (_, record) => (
-        <div className="flex space-x-2">
-          <button
-            className="text-primary-1 py-1 px-2 rounded"
-            onClick={() => handleShowModal(record)}
-          >
-            <PencilSquareIcon className="w-4 h-4" />
-          </button>
-          <button
-            className="text-red-500 py-1 px-2 rounded"
-            onClick={() => handleDeleteRecord(record.id)}
-          >
-            <TrashIcon className="w-4 h-4" />
-          </button>
-        </div>
-      ),
-    },
-  ];
-
   return (
-    <div className="flex flex-col">
-      <PageTitle title="Salary Calculations" />
+    <Box p={6}>
+      <Button onClick={() => handleShowModal(null)} colorScheme="orange">
+        Add Salary Record
+      </Button>
+      <Box mt={4}>
+        <Table variant="striped" colorScheme="teal">
+          <Thead>
+            <Tr>
+              <Th>Employee Number</Th>
+              <Th>Employee Name</Th>
+              <Th>Job Title</Th>
+              <Th>Department</Th>
+              <Th>Net Salary</Th>
+              <Th>Gross Salary</Th>
+              <Th>Deductions</Th>
+              <Th>Bonus</Th>
+              <Th>Tax Payable</Th>
+              <Th>Pension</Th>
+              <Th>Actions</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {salaryRecords.map((record) => (
+              <Tr key={record.id}>
+                <Td>{record.employeeNumber}</Td>
+                <Td>{record.employeeName}</Td>
+                <Td>{record.jobTitle}</Td>
+                <Td>{record.department}</Td>
+                <Td>${record.netSalary.toFixed(2)}</Td>
+                <Td>${record.grossSalary.toFixed(2)}</Td>
+                <Td>${record.deductions.toFixed(2)}</Td>
+                <Td>${record.bonus.toFixed(2)}</Td>
+                <Td>${record.taxPayable.toFixed(2)}</Td>
+                <Td>${record.pension.toFixed(2)}</Td>
+                <Td>
+                  <Button
+                    colorScheme="orange"
+                    onClick={() => handleShowModal(record)}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    colorScheme="red"
+                    onClick={() => handleDeleteRecord(record.id)}
+                    ml={2}
+                  >
+                    Delete
+                  </Button>
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </Box>
 
-      <div className="pt-10 p-6 border-[.8px] rounded-xl">
-        <div className="flex flex-col w-full">
-          <div className="w-[150px] h-[38px] mb-4">
-            <Button
-              onClick={() => handleShowModal(null)}
-              mode={"solid"}
-              buttonText="Add Salary Record"
-              defaultColor="primary-1"
-              hoverColor="primary-2"
-            />
-          </div>
-
-          <Table
-            columns={columns}
-            dataSource={salaryRecords}
-            rowKey="id"
-            scroll={{ x: 500 }}
-            className="bg-white shadow-md rounded-lg"
-          />
-
-          <Modal
-            title={currentRecord ? "Adjust Salary" : "Add New Salary Record"}
-            visible={showModal}
-            onCancel={handleCloseModal}
-            footer={null}
-          >
-            <Form layout="vertical" onFinish={formik.handleSubmit}>
-              <Form.Item
-                label="Employee ID"
-                validateStatus={formik.errors.employeeId ? "error" : ""}
-                help={formik.errors.employeeId}
-              >
+      <Modal isOpen={showModal} onClose={handleCloseModal}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>{currentRecord ? "Adjust Salary" : "Add New Salary Record"}</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <form onSubmit={formik.handleSubmit}>
+              <FormControl isInvalid={!!formik.errors.employeeNumber}>
+                <FormLabel>Employee Number</FormLabel>
                 <Input
-                  name="employeeId"
-                  value={formik.values.employeeId}
+                  name="employeeNumber"
+                  value={formik.values.employeeNumber}
                   onChange={formik.handleChange}
-                  readOnly={!!currentRecord}
                 />
-              </Form.Item>
+              </FormControl>
 
-              <Form.Item
-                label="Employee Name"
-                validateStatus={formik.errors.employeeName ? "error" : ""}
-                help={formik.errors.employeeName}
-              >
+              <FormControl isInvalid={!!formik.errors.employeeName} mt={4}>
+                <FormLabel>Employee Name</FormLabel>
                 <Input
                   name="employeeName"
                   value={formik.values.employeeName}
                   onChange={formik.handleChange}
                 />
-              </Form.Item>
+              </FormControl>
 
-              <Form.Item
-                label="Base Salary"
-                validateStatus={formik.errors.baseSalary ? "error" : ""}
-                help={formik.errors.baseSalary}
-              >
+              <FormControl isInvalid={!!formik.errors.jobTitle} mt={4}>
+                <FormLabel>Job Title</FormLabel>
+                <Input
+                  name="jobTitle"
+                  value={formik.values.jobTitle}
+                  onChange={formik.handleChange}
+                />
+              </FormControl>
+
+              <FormControl isInvalid={!!formik.errors.department} mt={4}>
+                <FormLabel>Department</FormLabel>
+                <Input
+                  name="department"
+                  value={formik.values.department}
+                  onChange={formik.handleChange}
+                />
+              </FormControl>
+
+              <FormControl isInvalid={!!formik.errors.baseSalary} mt={4}>
+                <FormLabel>Base Salary</FormLabel>
                 <Input
                   name="baseSalary"
                   type="number"
                   value={formik.values.baseSalary}
                   onChange={formik.handleChange}
                 />
-              </Form.Item>
+              </FormControl>
 
-              <Form.Item
-                label="Effective Date"
-                validateStatus={formik.errors.effectiveDate ? "error" : ""}
-                help={formik.errors.effectiveDate}
-              >
-                <DatePicker
-                  name="effectiveDate"
-                  onChange={(date, dateString) =>
-                    formik.setFieldValue("effectiveDate", dateString)
-                  }
-                  value={
-                    formik.values.effectiveDate
-                      ? formik.values.effectiveDate
-                      : null
-                  }
-                  style={{ width: "100%" }}
-                />
-              </Form.Item>
-
-              <Form.Item
-                label="Adjustment Type"
-                validateStatus={formik.errors.adjustmentType ? "error" : ""}
-                help={formik.errors.adjustmentType}
-              >
-                <Select
-                  value={formik.values.adjustmentType}
-                  onChange={(value) =>
-                    formik.setFieldValue("adjustmentType", value)
-                  }
-                  options={[
-                    { value: "Initial", label: "Initial" },
-                    { value: "Increment", label: "Increment" },
-                    { value: "Decrement", label: "Decrement" },
-                    { value: "Bonus", label: "Bonus" },
-                  ]}
-                />
-              </Form.Item>
-
-              <Form.Item
-                label="Adjustment Amount"
-                validateStatus={formik.errors.adjustmentAmount ? "error" : ""}
-                help={formik.errors.adjustmentAmount}
-              >
+              <FormControl isInvalid={!!formik.errors.netSalary} mt={4}>
+                <FormLabel>Net Salary</FormLabel>
                 <Input
-                  name="adjustmentAmount"
+                  name="netSalary"
                   type="number"
-                  value={formik.values.adjustmentAmount}
+                  value={formik.values.netSalary}
                   onChange={formik.handleChange}
                 />
-              </Form.Item>
+              </FormControl>
 
-              <Form.Item
-                label="Reason"
-                validateStatus={formik.errors.reason ? "error" : ""}
-                help={formik.errors.reason}
-              >
-                <Input.TextArea
-                  name="reason"
-                  rows={3}
-                  value={formik.values.reason}
+              <FormControl isInvalid={!!formik.errors.grossSalary} mt={4}>
+                <FormLabel>Gross Salary</FormLabel>
+                <Input
+                  name="grossSalary"
+                  type="number"
+                  value={formik.values.grossSalary}
                   onChange={formik.handleChange}
                 />
-              </Form.Item>
+              </FormControl>
 
-              <div className="w-[150px] h-[38px]">
-                <Button
-                  onClick={() => handleShowModal(null)}
-                  mode={"solid"}
-                  buttonText="Save"
-                  defaultColor="primary-1"
-                  hoverColor="primary-2"
-                />
-              </div>
-            </Form>
-          </Modal>
-        </div>
-      </div>
-    </div>
-  );
-};
+              <FormControl isInvalid={!!formik.errors.deductions} mt={4}>
+                <FormLabel>Deductions</FormLabel>
+                <Input
+                  name="deductions"
+                  type="number"
+                  value={formik.values.deductions} onChange={formik.handleChange} /> </FormControl>
+                            <FormControl isInvalid={!!formik.errors.bonus} mt={4}>
+            <FormLabel>Bonus</FormLabel>
+            <Input
+              name="bonus"
+              type="number"
+              value={formik.values.bonus}
+              onChange={formik.handleChange}
+            />
+          </FormControl>
+
+          <FormControl isInvalid={!!formik.errors.taxPayable} mt={4}>
+            <FormLabel>Tax Payable</FormLabel>
+            <Input
+              name="taxPayable"
+              type="number"
+              value={formik.values.taxPayable}
+              onChange={formik.handleChange}
+            />
+          </FormControl>
+
+          <FormControl isInvalid={!!formik.errors.pension} mt={4}>
+            <FormLabel>Pension</FormLabel>
+            <Input
+              name="pension"
+              type="number"
+              value={formik.values.pension}
+              onChange={formik.handleChange}
+            />
+          </FormControl>
+
+          <FormControl mt={4}>
+            <FormLabel>Effective Date</FormLabel>
+            <Input
+              name="effectiveDate"
+              type="date"
+              value={formik.values.effectiveDate}
+              onChange={formik.handleChange}
+            />
+          </FormControl>
+
+          <FormControl mt={4}>
+            <FormLabel>Adjustment Type</FormLabel>
+            <Select
+              name="adjustmentType"
+              value={formik.values.adjustmentType}
+              onChange={formik.handleChange}
+            >
+              <option value="Initial">Initial</option>
+              <option value="Increase">Increase</option>
+              <option value="Decrease">Decrease</option>
+            </Select>
+          </FormControl>
+
+          <FormControl mt={4} isInvalid={!!formik.errors.adjustmentAmount}>
+            <FormLabel>Adjustment Amount</FormLabel>
+            <Input
+              name="adjustmentAmount"
+              type="number"
+              value={formik.values.adjustmentAmount}
+              onChange={formik.handleChange}
+            />
+          </FormControl>
+
+          <FormControl mt={4} isInvalid={!!formik.errors.reason}>
+            <FormLabel>Reason for Adjustment</FormLabel>
+            <Textarea
+              name="reason"
+              value={formik.values.reason}
+              onChange={formik.handleChange}
+            />
+          </FormControl>
+
+          <Button mt={4} colorScheme="orange" type="submit">
+            {currentRecord ? "Update Record" : "Add Record"}
+          </Button>
+        </form>
+      </ModalBody>
+      <ModalFooter>
+        <Button colorScheme="gray" onClick={handleCloseModal}>
+          Cancel
+        </Button>
+      </ModalFooter>
+    </ModalContent>
+  </Modal>
+</Box>
+  )
+}
+
 
 export default SalaryCalculations;

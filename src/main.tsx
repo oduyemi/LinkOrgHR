@@ -23,7 +23,6 @@ import TimeTracking from "./pages/admin/attendance/TimeTracking.tsx";
 import LeaveManagement from "./pages/admin/attendance/LeaveManagement.tsx";
 import OvertimeManagement from "./pages/admin/attendance/OvertimeManagement.tsx";
 import SalaryCalculations from "./pages/admin/payroll/SalaryCalculations.tsx";
-import PayrollCompliance from "./pages/admin/payroll/PayrollCompliance.tsx";
 import Login from "./pages/auth/Login.tsx";
 import EmployeeDocumentManager from "./pages/admin/employee/EmployeeDocumentManager.tsx";
 import EmployeeList from "./pages/admin/employee/EmployeeList.tsx";
@@ -35,6 +34,9 @@ import LeaveRequestPage from "./pages/Employee/LeaveRequestPage.tsx";
 import PerformanceReviewPage from "./pages/Employee/PerformanceReviewPage.tsx";
 import DocumentManagementPage from "./pages/Employee/DocumentManagementPage.tsx";
 import Attendance from "./pages/Admin/attendance/Attendance.tsx";
+import PayslipGenerator from "./pages/Admin/payroll/PayslipGenerator.tsx";
+import TaxManager from "./pages/Admin/payroll/TaxManager.tsx";
+import HMOManager from "./pages/Admin/payroll/HMOManager.tsx";
 
 const router = createBrowserRouter([
   {
@@ -110,7 +112,7 @@ const router = createBrowserRouter([
         errorElement: <NotFoundPage />,
       },
       {
-        path: "/attendance/time-tracking",
+        path: "/attendance/time-tracker",
         element: <TimeTracking />,
         errorElement: <NotFoundPage />,
       },
@@ -132,8 +134,18 @@ const router = createBrowserRouter([
         errorElement: <NotFoundPage />,
       },
       {
-        path: "/payroll/payroll-compliance",
-        element: <PayrollCompliance />,
+        path: "/payroll/tax",
+        element: <TaxManager />,
+        errorElement: <NotFoundPage />,
+      },
+      {
+        path: "/payroll/hmo",
+        element: <HMOManager />,
+        errorElement: <NotFoundPage />,
+      },
+      {
+        path: "/payroll/payslip",
+        element: <PayslipGenerator />,
         errorElement: <NotFoundPage />,
       },
     ],

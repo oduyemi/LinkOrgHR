@@ -56,7 +56,7 @@ const EmployeeDocumentManager: React.FC = () => {
           ) : selectedEmployee ? (
             <Stack spacing={4}>
               <DocumentViewer employeeId={selectedEmployee} />
-              <Button colorScheme="teal" onClick={onOpen} mt={4}>
+              <Button colorScheme="orange" onClick={onOpen} mt={4}>
                 Add Document
               </Button>
             </Stack>

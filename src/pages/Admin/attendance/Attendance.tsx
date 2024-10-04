@@ -227,7 +227,7 @@ const Attendance: React.FC = () => {
           >
             Clear Filters
           </Button>
-          <Button onClick={exportToCSV} colorScheme="teal">
+          <Button onClick={exportToCSV} colorScheme="orange">
             Export Data
           </Button>
         </HStack>

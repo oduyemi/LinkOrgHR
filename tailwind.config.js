@@ -19,6 +19,8 @@ module.exports = {
         "primary-3": "#F0F8FF",
         "primary-4": "#016E2A",
         "primary-5": "#01A985",
+        "orange": "#E65D0F",
+        "blu": "#010156",
 
         "green-1": "#008000",
 

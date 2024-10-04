@@ -74,7 +74,7 @@ const columns: TableColumnsType<TimeEntry> = [
         <Button variant="outline" onClick={() => console.log("Edit", record)}>
           <PencilSquareIcon className="w-4 h-4" />
         </Button>
-        <Button variant="outline" colorScheme="red" onClick={() => console.log("Delete", record.id)}>
+        <Button variant="outline" colorScheme="orange" onClick={() => console.log("Delete", record.id)}>
           <TrashIcon className="w-4 h-4" />
         </Button>
       </div>
@@ -217,11 +217,11 @@ const TimeTracking: React.FC = () => {
       <Box p={6} borderWidth={1} borderRadius="md">
         <Flex direction="column" w="full">
           <Flex mb={4} wrap="wrap" gap={2}>
-            <Button colorScheme="teal" onClick={() => handleShowModal(null)}>
+            <Button variant="outline" colorScheme="orange" onClick={() => handleShowModal(null)}>
               Add Manual Entry
             </Button>
             {!isTracking ? (
-              <Button colorScheme="green" onClick={handleStartTracking} leftIcon={<FaPlay />}>
+              <Button colorScheme="orange" onClick={handleStartTracking} leftIcon={<FaPlay />}>
                 Start Tracking
               </Button>
             ) : (
@@ -314,7 +314,7 @@ const TimeTracking: React.FC = () => {
           <ModalFooter>
             <Button onClick={handleCloseModal}>Cancel</Button>
             <Button
-              colorScheme="teal"
+              colorScheme="orange"
               onClick={formik.handleSubmit}
               ml={3}
             >
